@@ -128,9 +128,9 @@ export default function InputFileUpload() {
         <VisuallyHiddenInput type="file" onChange={handleFileChange} />
       </Button>
 
-      {/* {urls.length > 0 ? <NewImageList /> : null} */}
+      {urls.length > 0 ? <NewImageList /> : null}
 
-      {urls.length > 0 ? <StandardImageList /> : null}
+      {/* {urls.length > 0 ? <StandardImageList /> : null} */}
     </>
   );
 }

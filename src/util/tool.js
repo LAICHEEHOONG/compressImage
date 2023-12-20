@@ -38,9 +38,9 @@ export function resizeAndConvertToWebP(file, maxWidth, maxHeight, quality, image
         ctx.drawImage(image, 0, 0, width, height);
 
         // Add watermark
-        ctx.font = "3rem Arial";
+        ctx.font = `${48 * (width / 1024)}px Arial`;
         ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
-        ctx.fillText('THE NEXT SIX', canvas.width / 2 - 180, canvas.height / 2);
+        ctx.fillText('THE NEXT SIX', canvas.width / 2 - (180 * (width / 1024)), canvas.height / 2);
 
         if(imageType === 'keep') {
           imageType = file.type
