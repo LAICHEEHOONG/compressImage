@@ -1,12 +1,17 @@
-import React, { useState } from "react";
-import { Typography, Paper, Grid } from "@mui/material";
+import React from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { addImage } from "../features/image_/imageSlice";
+import { addImage, addCompressWH } from "../features/image_/imageSlice";
 import Button from "@mui/joy/Button";
 import SvgIcon from "@mui/joy/SvgIcon";
 import { styled } from "@mui/joy";
 import { resizeAndConvertToWebP } from "../util/tool";
-import {progressOpen, progressReset, progressPercent} from '../features/progress/progressSlice';
+import {
+  progressOpen,
+  progressReset,
+  progressPercent,
+} from "../features/progress/progressSlice";
+import StandardImageList from "./imageList";
+import NewImageList from "./newImageList";
 
 const VisuallyHiddenInput = styled("input")`
   clip: rect(0 0 0 0);
@@ -21,22 +26,55 @@ const VisuallyHiddenInput = styled("input")`
 `;
 
 export default function InputFileUpload() {
-  // const [selectedFile, setSelectedFile] = useState(null);
-  const lastImage = useSelector((state) => state.image);
+  const parameter = useSelector((state) => state.parameter);
+  const urls = useSelector((state) => state.image.urls);
   const dispatch = useDispatch();
 
   const handleFileChange = async (event) => {
     dispatch(progressOpen(true));
     dispatch(progressPercent(10));
     const file = event.target.files[0];
+    let oriW, oriH, compressW, compressH;
+
+    if (file.type.startsWith("image/")) {
+      const img = new Image();
+
+      img.onload = function () {
+        oriW = img.width;
+        oriH = img.height;
+
+        // console.log(`Image width: ${width}px`);
+        // console.log(`Image height: ${height}px`);
+      };
+
+      img.src = URL.createObjectURL(file);
+    } else {
+      console.log("The selected file is not an image.");
+    }
+
     dispatch(progressPercent(10));
-    if(file === '' || !file) {
+    if (file === "" || !file) {
       return;
     }
     dispatch(progressPercent(10));
-    const resizedImage = await resizeAndConvertToWebP(file, 300, 300, 0.8);
+    const resizedImage = await resizeAndConvertToWebP(
+      file,
+      parameter.width,
+      parameter.height,
+      parameter.quality,
+      parameter.fileType
+    );
+
+    const compressImage = new Image();
+
     dispatch(progressPercent(60));
     const compressUrl = URL.createObjectURL(resizedImage);
+    compressImage.src = compressUrl;
+    compressImage.onload = function () {
+      compressW = compressImage.width;
+      compressH = compressImage.height;
+      dispatch(addCompressWH([compressW, compressH]));
+    };
 
     let dataObj = {
       url: URL.createObjectURL(file),
@@ -46,6 +84,8 @@ export default function InputFileUpload() {
       compressSize: resizedImage.size,
       oriType: file.type,
       compressType: resizedImage.type,
+      compressionPercentage: resizedImage.size * (100 / file.size),
+      oriWH: [oriW, oriH],
     };
 
     dispatch(addImage(dataObj));
@@ -53,11 +93,9 @@ export default function InputFileUpload() {
     dispatch(progressPercent(10));
 
     setTimeout(() => {
-      dispatch(progressReset())
-    }, 1000)
+      dispatch(progressReset());
+    }, 1000);
   };
-
-
 
   return (
     <>
@@ -90,36 +128,9 @@ export default function InputFileUpload() {
         <VisuallyHiddenInput type="file" onChange={handleFileChange} />
       </Button>
 
-      <div>
-        {lastImage.names.length > 0 ? (
-          <Paper elevation={3} style={{ padding: "20px", margin: "20px" }}>
-            <Grid
-              container
-              justifyContent="center"
-              alignItems="center"
-              spacing={2}
-            >
-              <Grid item>
-                <Typography variant="h6">
-                  Name: {lastImage.names[lastImage.names.length - 1]}
-                </Typography>
-                <Typography variant="h6">
-                  Size: {lastImage.oriSizes[lastImage.names.length - 1]}
-                </Typography>
-                <Typography variant="h6">
-                  Type: {lastImage.oriTypes[lastImage.names.length - 1]}
-                </Typography>
+      {/* {urls.length > 0 ? <NewImageList /> : null} */}
 
-                <img
-                  style={{ maxWidth: 1000, minWidth: 500, marginTop: 20 }}
-                  src={lastImage.urls[lastImage.names.length - 1]}
-                  alt="Selected"
-                />
-              </Grid>
-            </Grid>
-          </Paper>
-        ) : null}
-      </div>
+      {urls.length > 0 ? <StandardImageList /> : null}
     </>
   );
 }

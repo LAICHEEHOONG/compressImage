@@ -14,7 +14,6 @@ import ListItemText from "@mui/material/ListItemText";
 import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
 import UploadPage from "./uploadPage";
 
 
@@ -74,12 +73,6 @@ function DrawerAppBar(props) {
           >
             UPLOAD IMAGE APP
           </Typography>
-
-          <Box sx={{ display: { xs: "none", sm: "block" } }}>
-            <Button sx={{ color: "#fff" }} onClick={toImagePage}>
-              {"Image"}
-            </Button>
-          </Box>
         </Toolbar>
       </AppBar>
       <nav>

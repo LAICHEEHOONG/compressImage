@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import PropTypes from "prop-types";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -17,8 +18,8 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import StandardImageList from "./imageList";
 
-const drawerWidth = 240;
 
+const drawerWidth = 240;
 
 function ImageDrawerAppBar(props) {
 
@@ -72,10 +73,12 @@ function ImageDrawerAppBar(props) {
             component="div"
             sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }}
           >
-            UPLOAD IMAGE APP
+            UPLOAD COMPRESS APP
           </Typography>
           <Box sx={{ display: { xs: "none", sm: "block" } }}>
-            <Button sx={{ color: "#fff" }} onClick={toHomePage} >{"Home"}</Button>
+            <Button sx={{ color: "#fff" }} onClick={toHomePage}>
+              {"Home"}
+            </Button>
           </Box>
         </Toolbar>
       </AppBar>
@@ -86,7 +89,7 @@ function ImageDrawerAppBar(props) {
           open={mobileOpen}
           onClose={handleDrawerToggle}
           ModalProps={{
-            keepMounted: true, 
+            keepMounted: true,
           }}
           sx={{
             display: { xs: "block", sm: "none" },
