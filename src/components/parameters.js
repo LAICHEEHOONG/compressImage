@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, {useEffect, useState} from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
@@ -14,6 +14,17 @@ import {
 export default function ParametersFields() {
   const dispatch = useDispatch();
   const { width, height } = useSelector((state) => state.parameter);
+  const screenWidth = useSelector(state => state.screen.screenWidth);
+  const [widthObj, setWidthObj] = useState({width: '25ch'});
+
+  useEffect(() => {
+    if(screenWidth < 800) {
+      setWidthObj(state => ({...state, width: '15ch'}));
+    } else {
+      setWidthObj(state => ({...state, width: '25ch'}));
+    }
+  }, [screenWidth]);
+
 
   const handleWidthInputChange = (event) => {
     let numStatus = Number(event.target.value);
@@ -54,7 +65,7 @@ export default function ParametersFields() {
     <Box
       component="form"
       sx={{
-        "& > :not(style)": { m: 1, width: "25ch" },
+        "& > :not(style)": { m: 1, width: widthObj.width },
         marginBottom: "10px",
       }}
       noValidate

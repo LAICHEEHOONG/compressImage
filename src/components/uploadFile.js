@@ -1,6 +1,6 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { addImage, addCompressWH } from "../features/image_/imageSlice";
+import { addImage, addCompressWH, mergeData } from "../features/image_/imageSlice";
 import Button from "@mui/joy/Button";
 import SvgIcon from "@mui/joy/SvgIcon";
 import { styled } from "@mui/joy";
@@ -91,7 +91,7 @@ export default function InputFileUpload() {
     dispatch(addImage(dataObj));
 
     dispatch(progressPercent(10));
-
+    // dispatch(mergeData())
     setTimeout(() => {
       dispatch(progressReset());
     }, 1000);

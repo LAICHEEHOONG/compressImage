@@ -39,7 +39,7 @@ export default function StandardImageList() {
 
       <div style={{ display: "flex" }}>
         <ImageList
-          sx={{ width: 700, height: 800, marginRight: 5 }}
+          sx={{ width: 500, height: 800, marginRight: 5 }}
           cols={1}
           rowHeight={300}
         >
@@ -60,7 +60,6 @@ export default function StandardImageList() {
                 actionIcon={
                   <IconButton sx={{ color: "rgba(255, 255, 255, 0.7)" }}>
                     {`${oriWH[index][0]} x ${oriWH[index][1]}`}
-                    {/* <InfoIcon /> */}
                   </IconButton>
                 }
               />
@@ -68,7 +67,7 @@ export default function StandardImageList() {
           ))}
         </ImageList>
 
-        <ImageList sx={{ width: 700, height: 800 }} cols={1} rowHeight={300}>
+        <ImageList sx={{ width: 500, height: 800 }} cols={1} rowHeight={300}>
           {compressUrls.map((url, index) => (
             <ImageListItem key={index}>
               <img
@@ -88,7 +87,6 @@ export default function StandardImageList() {
                 actionIcon={
                   <IconButton sx={{ color: "rgba(255, 255, 255, 0.7)" }}>
                     {`${compressWH[index][0]} x ${compressWH[index][1]}`}
-                    {/* <InfoIcon /> */}
                   </IconButton>
                 }
               />

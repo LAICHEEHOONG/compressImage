@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, {useEffect, useState} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
@@ -11,17 +11,26 @@ import { setQuality } from '../features/parameter/parameterSlice';
 export default function QualitySelector() {
   const dispatch = useDispatch();
   const quality = useSelector(state => state.parameter.quality);
+  const screenWidth = useSelector(state => state.screen.screenWidth);
+  const [widthObj, setWidthObj] = useState({width: 224.61});
+
+  useEffect(() => {
+    if(screenWidth < 800) {
+      setWidthObj(state => ({...state, width: 134.77}));
+    } else {
+      setWidthObj(state => ({...state, width: 224.61}));
+    }
+  }, [screenWidth]);
 
 
-  // const [age, setAge] = React.useState('');
+
 
   const handleChange = (event) => {
     dispatch(setQuality(event.target.value));
-    // setAge(event.target.value);
   };
 
   return (
-    <Box sx={{ width: 224.61, marginLeft: 2 }}>
+    <Box sx={{ width: widthObj.width, marginLeft: 2 }}>
       <FormControl fullWidth>
         <InputLabel id="demo-simple-select-label">Quality</InputLabel>
         <Select

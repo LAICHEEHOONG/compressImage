@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   ImageListItem,
@@ -9,91 +9,80 @@ import {
 } from "@mui/material";
 import { bytesToMB } from "../util/tool";
 import { dialogURL, dialogOpen } from "../features/dialog/dialogSlice";
+import { mergeData } from "../features/image_/imageSlice";
 
 export default function NewImageList() {
   const dispatch = useDispatch();
   const oriUrls = useSelector((state) => state.image.urls);
-  const oriSizes = useSelector((state) => state.image.oriSizes);
-  const oriTypes = useSelector((state) => state.image.oriTypes);
-  const compressUrls = useSelector((state) => state.image.compressUrls);
-  const compressSizes = useSelector((state) => state.image.compressSizes);
-  const compressTypes = useSelector((state) => state.image.compressTypes);
-  const compressPercent = useSelector(
-    (state) => state.image.compressionPercentage
-  );
-  const oriWH = useSelector((state) => state.image.oriWH);
-  const compressWH = useSelector((state) => state.image.compressWH);
+  const mergeDataArr = useSelector((state) => state.image.mergeData);
+  const screenWidth = useSelector((state) => state.screen.screenWidth);
+
+  let [widthControl, setWidthControl] = useState({ minWidth: 950, cols: 2 });
 
   const clickImageHandle = (event) => {
     dispatch(dialogURL(event.target.name));
     dispatch(dialogOpen(true));
   };
 
+  useEffect(() => {
+   
+    if(screenWidth < 960) {
+      setWidthControl(state => ({...state, minWidth: 360, cols: 1}))
+    } else {
+      setWidthControl(state => ({...state, minWidth: 950, cols: 2}))
+    }
+
+    dispatch(mergeData());
+  }, [dispatch, screenWidth]);
+
   return (
-    <div>
+    <div style={{ margin: "20px" }}>
       {oriUrls.length > 0 ? (
         <Typography variant="h4" gutterBottom>
-          Image comparison
+          Image Comparison
         </Typography>
       ) : null}
 
-      <div style={{ display: "flex" }}>
+      <div>
         <ImageList
-          sx={{ width: 600, marginRight: 5 }}
-          cols={1}
-        //   rowHeight={300}
+          sx={{ minWidth: widthControl.minWidth }}
+          cols={widthControl.cols}
         >
-          {oriUrls.map((url, index) => (
-            <ImageListItem key={index} sx={{position: 'relative'}} >
-              <img
-                name={`${url}`}
-                onClick={clickImageHandle}
-                style={{ cursor: "pointer", marginTop: '20px'}}
-                src={url}
-                alt={` ${index + 1}`}
-              />
-              <ImageListItemBar
-                title={`
-                   Type: ${oriTypes[index].substring(6)} , 
-                   Size: ${bytesToMB(oriSizes[index])}
-                  `}
-                actionIcon={
-                  <IconButton sx={{ color: "rgba(255, 255, 255, 0.7)" }}>
-                    {`${oriWH[index][0]} x ${oriWH[index][1]}`}
-                  </IconButton>
-                }
-                // sx={{marginTop: '20px'}}
-              />
-            </ImageListItem>
-          ))}
-        </ImageList>
-
-        <ImageList sx={{ width: 600}} cols={1} >
-          {compressUrls.map((url, index) => (
-            <ImageListItem key={index}>
-              <img
-                name={`${url}`}
-                onClick={clickImageHandle}
-                style={{  cursor: "pointer", marginTop: '20px' }}
-                src={url}
-                alt={` ${index + 1}`}
-              />
-          
-              <ImageListItemBar
-                title={`
-                Type: ${compressTypes[index].substring(6)} , 
-                Size: ${bytesToMB(compressSizes[index])} ,
-                Compression: ${100 - compressPercent[index].toFixed(2)}%
-                `}
-                actionIcon={
-                  <IconButton sx={{ color: "rgba(255, 255, 255, 0.7)" }}>
-                    {`${compressWH[index][0]} x ${compressWH[index][1]}`}
-                    {/* <InfoIcon /> */}
-                  </IconButton>
-                }
-              />
-            </ImageListItem>
-          ))}
+          {mergeDataArr.length > 0 ? (
+            mergeDataArr.map((data, index) => (
+              <ImageListItem
+                key={index + data.name}
+                sx={{ position: "relative" }}
+              >
+                <img
+                  name={`${data.urls}`}
+                  onClick={clickImageHandle}
+                  style={{ cursor: "pointer", marginTop: "20px" }}
+                  src={data.urls}
+                  alt={` ${index + 1}`}
+                />
+                <ImageListItemBar
+                  title={
+                  `Type: ${data.type.substring(6)} , Size: ${bytesToMB(data.size)}
+                   ${data.percentage && screenWidth > 570 ? `, Compression: ${data.percentage.toFixed(2)}%`: ""}`
+                  }
+                  actionIcon={
+                    <IconButton
+                      sx={{
+                        color: "rgba(255, 255, 255, 0.7)",
+                        fontSize: "1rem",
+                      }}
+                    >
+                      {`${data.wH[0]} x ${data.wH[1]}`}
+                    </IconButton>
+                  }
+                  sx={{fontSize: '5px'}}
+                />
+              </ImageListItem>
+            ))
+          ) : (
+            <></>
+          )}
         </ImageList>
       </div>
     </div>

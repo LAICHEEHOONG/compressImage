@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import AppBar from "@mui/material/AppBar";
@@ -15,11 +16,13 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import UploadPage from "./uploadPage";
-
+import { Button } from "@mui/material";
+import { reset } from "../features/image_/imageSlice";
 
 const drawerWidth = 240;
 
 function DrawerAppBar(props) {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const toImagePage = () => {
@@ -33,6 +36,10 @@ function DrawerAppBar(props) {
     setMobileOpen((prevState) => !prevState);
   };
 
+  const resetImageHandle = () => {
+    dispatch(reset());
+  }
+
   const drawer = (
     <Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
       <Typography variant="h6" sx={{ my: 2 }}>
@@ -42,7 +49,7 @@ function DrawerAppBar(props) {
       <List>
         <ListItem disablePadding>
           <ListItemButton sx={{ textAlign: "center" }}>
-            <ListItemText primary={"Image"} onClick={toImagePage} />
+            <ListItemText primary={"Reset"} onClick={resetImageHandle} />
           </ListItemButton>
         </ListItem>
       </List>
@@ -51,6 +58,8 @@ function DrawerAppBar(props) {
 
   const container =
     window !== undefined ? () => window().document.body : undefined;
+
+  
 
   return (
     <Box>
@@ -73,6 +82,9 @@ function DrawerAppBar(props) {
           >
             UPLOAD IMAGE APP
           </Typography>
+          <Box sx={{ display: { xs: "none", sm: "block" } }}>
+            <Button sx={{ color: "#fff" }} onClick={resetImageHandle} >RESET</Button>
+          </Box>
         </Toolbar>
       </AppBar>
       <nav>
