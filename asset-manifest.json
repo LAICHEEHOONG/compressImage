@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/compressImage/static/css/main.003b23e3.css",
+    "main.js": "/compressImage/static/js/main.4296de89.js",
+    "index.html": "/compressImage/index.html",
+    "main.003b23e3.css.map": "/compressImage/static/css/main.003b23e3.css.map",
+    "main.4296de89.js.map": "/compressImage/static/js/main.4296de89.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.003b23e3.css",
+    "static/js/main.4296de89.js"
+  ]
+}
